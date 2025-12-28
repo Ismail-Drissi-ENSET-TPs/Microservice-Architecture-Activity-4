@@ -1,0 +1,43 @@
+<div class="container mt-4">
+  <h2>Conferences</h2>
+
+  <div *ngIf="conferences.length === 0" class="alert alert-warning">
+    No conferences found or data is loading...
+  </div>
+
+  <div class="mb-3">
+    <small>Debug Info: Loaded {{conferences.length}} conferences.</small>
+  </div>
+
+  <div class="row">
+    <div class="col-md-6 mb-4" *ngFor="let c of conferences">
+      <div class="card h-100">
+        <div class="card-header bg-primary text-white">
+          {{c.titre}} ({{c.type}})
+        </div>
+        <div class="card-body">
+          <p><strong>Date:</strong> {{c.date | date:'medium'}}</p>
+          <p><strong>Duration:</strong> {{c.duree}} hours</p>
+          <p><strong>Registered:</strong> {{c.nombreInscrits}}</p>
+          <p><strong>Score:</strong> {{c.score}}</p>
+
+          <div *ngIf="c.keynote" class="alert alert-info mt-2">
+            <strong>Keynote:</strong> {{c.keynote.prenom}} {{c.keynote.nom}} ({{c.keynote.fonction}})
+          </div>
+          <div *ngIf="!c.keynote && c.keynoteId" class="text-muted">
+            <em>Loading Keynote (ID: {{c.keynoteId}})...</em>
+          </div>
+
+          <div *ngIf="c.reviews && c.reviews.length > 0" class="mt-3">
+            <h6>Reviews:</h6>
+            <ul class="list-group">
+              <li class="list-group-item" *ngFor="let r of c.reviews">
+                <span class="badge bg-warning text-dark me-2">{{r.stars}} Stars</span> {{r.texte}}
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

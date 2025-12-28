@@ -8,6 +8,7 @@ import com.ismaildrs.conferenceservice.models.Keynote;
 import com.ismaildrs.conferenceservice.repositories.ConferenceRepository;
 import jakarta.transaction.Transactional;
 import lombok.AllArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,6 +17,7 @@ import java.util.stream.Collectors;
 @Service
 @Transactional
 @AllArgsConstructor
+@Slf4j
 public class ConferenceServiceImpl implements ConferenceService {
 
   private ConferenceRepository conferenceRepository;
@@ -41,7 +43,7 @@ public class ConferenceServiceImpl implements ConferenceService {
         Keynote keynote = keynoteRestClient.getKeynoteById(conference.getKeynoteId());
         dto.setKeynote(keynote);
       } catch (Exception e) {
-        // Keynote service might be down or keynote not found
+        log.error("Error fetching Keynote with ID " + conference.getKeynoteId(), e);
       }
     }
     return dto;
@@ -50,7 +52,18 @@ public class ConferenceServiceImpl implements ConferenceService {
   @Override
   public List<ConferenceDTO> getAllConferences() {
     return conferenceRepository.findAll().stream()
-        .map(conferenceMapper::fromConference)
+        .map(conference -> {
+          ConferenceDTO dto = conferenceMapper.fromConference(conference);
+          if (conference.getKeynoteId() != null) {
+            try {
+              Keynote keynote = keynoteRestClient.getKeynoteById(conference.getKeynoteId());
+              dto.setKeynote(keynote);
+            } catch (Exception e) {
+              log.error("Error fetching Keynote with ID " + conference.getKeynoteId(), e);
+            }
+          }
+          return dto;
+        })
         .collect(Collectors.toList());
   }
 }

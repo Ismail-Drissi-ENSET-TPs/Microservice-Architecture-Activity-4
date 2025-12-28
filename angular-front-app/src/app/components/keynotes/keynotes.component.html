@@ -1,0 +1,24 @@
+<div class="container mt-4">
+  <h2>Keynotes</h2>
+
+  <table class="table table-striped">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>First Name</th>
+        <th>Last Name</th>
+        <th>Email</th>
+        <th>Function</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let k of keynotes">
+        <td>{{k.id}}</td>
+        <td>{{k.prenom}}</td>
+        <td>{{k.nom}}</td>
+        <td>{{k.email}}</td>
+        <td>{{k.fonction}}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
