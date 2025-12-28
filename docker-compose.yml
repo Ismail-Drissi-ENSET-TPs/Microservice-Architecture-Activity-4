@@ -1,0 +1,105 @@
+version: '3.8'
+
+services:
+  # Identity Provider
+  keycloak:
+    image: quay.io/keycloak/keycloak:23.0.0
+    container_name: keycloak
+    environment:
+      KEYCLOAK_ADMIN: admin
+      KEYCLOAK_ADMIN_PASSWORD: admin
+    command: start-dev
+    ports:
+      - "8080:8080"
+    networks:
+      - conference-net
+
+  # Configuration Service
+  config-service:
+    build: ./config-service
+    container_name: config-service
+    ports:
+      - "8888:8888"
+    networks:
+      - conference-net
+
+  # Discovery Service
+  discovery-service:
+    build: ./discovery-service
+    container_name: discovery-service
+    ports:
+      - "8761:8761"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+    depends_on:
+      - config-service
+    networks:
+      - conference-net
+
+  # Keynote Service
+  keynote-service:
+    build: ./keynote-service
+    container_name: keynote-service
+    ports:
+      - "8081:8081"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+      # Split Issuer (Validation) and JWK Set (Fetch) for Docker/Localhost compatibility
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:8080/realms/conference-app
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/conference-app/protocol/openid-connect/certs
+    depends_on:
+      - config-service
+      - discovery-service
+      - keycloak
+    networks:
+      - conference-net
+
+  # Conference Service
+  conference-service:
+    build: ./conference-service
+    container_name: conference-service
+    ports:
+      - "8082:8082"
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_ISSUER_URI=http://localhost:8080/realms/conference-app
+      - SPRING_SECURITY_OAUTH2_RESOURCESERVER_JWT_JWK_SET_URI=http://keycloak:8080/realms/conference-app/protocol/openid-connect/certs
+    depends_on:
+      - config-service
+      - discovery-service
+      - keycloak
+    networks:
+      - conference-net
+
+  # API Gateway
+  gateway-service:
+    build: ./gateway-service
+    container_name: gateway-service
+    ports:
+      - "9999:9999" # Assuming 8888 was config, usually gateway is different, forcing 9999 if 8888 occupied or mapping 8888:8888
+    environment:
+      - SPRING_CONFIG_IMPORT=optional:configserver:http://config-service:8888
+      - EUREKA_CLIENT_SERVICEURL_DEFAULTZONE=http://discovery-service:8761/eureka/
+    depends_on:
+      - config-service
+      - discovery-service
+    networks:
+      - conference-net
+
+  # Frontend
+  angular-front-app:
+    build: ./angular-front-app
+    container_name: angular-front-app
+    ports:
+      - "4200:80" # Map host 4200 to container 80 (nginx)
+    depends_on:
+      - gateway-service
+      - keycloak
+    networks:
+      - conference-net
+
+networks:
+  conference-net:
+    driver: bridge
