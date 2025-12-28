@@ -14,9 +14,9 @@ Security is a primary focus, implemented using **OAuth2** and **OIDC** protocols
 
 The system consists of the following logically separated components:
 
-1.  **Config Service (Port 8888)**: Centralized configuration server backed by Git.
+1.  **Config Service (Port 8091)**: Centralized configuration server backed by Git.
 2.  **Discovery Service (Port 8761)**: Eureka Service Registry for dynamic service registration and discovery.
-3.  **Gateway Service (Port 8888/9999)**: Spring Cloud Gateway acting as the single entry point for routing API requests.
+3.  **Gateway Service (Port 8090)**: Spring Cloud Gateway acting as the single entry point for routing API requests.
 4.  **Keynote Service (Port 8081)**: Resource Server managing Keynote speaker data.
 5.  **Conference Service (Port 8082)**: Resource Server managing Conferences and Reviews. It communicates securely with the Keynote Service via OpenFeign.
 6.  **Angular Frontend (Port 4200)**: A modern web interface for users and admins.
@@ -120,4 +120,5 @@ Access the application at `http://localhost:4200`.
 
 **Conferences (Admin View)**
 ![Conferences Admin View](screenshots/conferences-admin-page.png)
+
 
