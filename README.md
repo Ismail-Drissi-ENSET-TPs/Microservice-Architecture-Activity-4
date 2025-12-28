@@ -8,7 +8,7 @@ Security is a primary focus, implemented using **OAuth2** and **OIDC** protocols
 
 ## Architecture Diagram
 
-![Architecture Diagram](screenshots/diagram.png)
+![Architecture Diagram](screenshots/new-diagram.png)
 
 > *Note: If you have generated a diagram using Mermaid or an external tool, place it here.*
 
