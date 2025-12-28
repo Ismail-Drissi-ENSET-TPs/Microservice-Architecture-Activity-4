@@ -8,7 +8,7 @@ Security is a primary focus, implemented using **OAuth2** and **OIDC** protocols
 
 ## Architecture Diagram
 
-![Architecture Diagram](screenshots/new-diagram.png)
+![Architecture Diagram](screenshots/diagram.png)
 
 ## System Components
 
