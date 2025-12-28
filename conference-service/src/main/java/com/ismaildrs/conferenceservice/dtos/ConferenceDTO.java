@@ -1,22 +1,18 @@
-package com.ismaildrs.conferenceservice.entities;
+package com.ismaildrs.conferenceservice.dtos;
 
-import jakarta.persistence.*;
+import com.ismaildrs.conferenceservice.models.Keynote;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-
 import java.util.Date;
 import java.util.Collection;
 
-@Entity
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class Conference {
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
+public class ConferenceDTO {
   private Long id;
   private String titre;
   private String type;
@@ -24,9 +20,7 @@ public class Conference {
   private double duree;
   private int nombreInscrits;
   private double score;
-
   private Long keynoteId;
-
-  @OneToMany(mappedBy = "conference")
-  private Collection<Review> reviews;
+  private Keynote keynote;
+  private Collection<ReviewDTO> reviews;
 }
