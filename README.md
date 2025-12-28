@@ -10,8 +10,6 @@ Security is a primary focus, implemented using **OAuth2** and **OIDC** protocols
 
 ![Architecture Diagram](screenshots/new-diagram.png)
 
-> *Note: If you have generated a diagram using Mermaid or an external tool, place it here.*
-
 ## System Components
 
 The system consists of the following logically separated components:
@@ -122,3 +120,4 @@ Access the application at `http://localhost:4200`.
 
 **Conferences (Admin View)**
 ![Conferences Admin View](screenshots/conferences-admin-page.png)
+
