@@ -3,6 +3,7 @@ package com.ismaildrs.keynoteservice.web;
 import com.ismaildrs.keynoteservice.dtos.KeynoteDTO;
 import com.ismaildrs.keynoteservice.services.KeynoteService;
 import lombok.AllArgsConstructor;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -25,6 +26,7 @@ public class KeynoteController {
   }
 
   @PostMapping
+  @PreAuthorize("hasAuthority('ROLE_ADMIN')")
   public KeynoteDTO saveKeynote(@RequestBody KeynoteDTO keynoteDTO) {
     return keynoteService.saveKeynote(keynoteDTO);
   }

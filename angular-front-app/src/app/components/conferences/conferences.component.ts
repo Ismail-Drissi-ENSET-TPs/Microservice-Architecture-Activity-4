@@ -5,6 +5,7 @@ import { Conference } from '../../models/conference.model';
 import { CommonModule } from '@angular/common';
 
 import { ChangeDetectorRef } from '@angular/core';
+import { KeycloakService } from 'keycloak-angular';
 
 @Component({
   selector: 'app-conferences',
@@ -15,10 +16,12 @@ import { ChangeDetectorRef } from '@angular/core';
 })
 export class ConferencesComponent implements OnInit {
   conferences: Conference[] = [];
+  isAdmin = false;
 
-  constructor(private conferenceService: ConferenceService, private keynoteService: KeynoteService, private cdr: ChangeDetectorRef) { }
+  constructor(private conferenceService: ConferenceService, private keynoteService: KeynoteService, private cdr: ChangeDetectorRef, private keycloakService: KeycloakService) { }
 
   ngOnInit(): void {
+    this.isAdmin = this.keycloakService.getUserRoles().includes('ADMIN');
     this.conferenceService.getAllConferences().subscribe({
       next: (data) => {
         console.log('Conferences received:', data);
